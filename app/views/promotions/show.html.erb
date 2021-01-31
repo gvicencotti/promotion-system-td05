@@ -7,7 +7,7 @@
     <dt>Código da Promoção</dt>
     <dd><%= @promotion.code %>
     <dt>Data de Expiração</dt>
-    <dd><%= @promotion.expiration_date.strftime("%d/%m/%Y") %>
+    <dd><%= I18n.localize(@promotion.expiration_date) %>
     <dt>Quantidade de Cupons</dt>
     <dd><%= @promotion.coupon_quantity %>
 </dl>
