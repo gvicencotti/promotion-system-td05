@@ -21,4 +21,10 @@ class PromotionsController < ApplicationController
             render 'new'
         end
     end
+
+    def generate_coupons
+        @promotion = Promotion.find(params[:id])
+        @promotion.generate_coupons!
+        redirect_to @promotion, notice: t('.success')
+    end
 end
