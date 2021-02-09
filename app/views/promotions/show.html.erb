@@ -1,6 +1,7 @@
 <%= link_to 'Voltar', promotions_path %>
 
 <h1><%= @promotion.name %></h1>
+<span>Cadastrada por: <%= @promotion.user.email %>
 
 <dl>
     <dt><%= Promotion.human_attribute_name(:description) %></dt>
