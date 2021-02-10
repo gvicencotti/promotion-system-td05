@@ -14,9 +14,19 @@
     <dd><%= I18n.localize(@promotion.expiration_date) %>
     <dt>Quantidade de Cupons</dt>
     <dd><%= @promotion.coupon_quantity %>
+
+    <% if @promotion.approved? %>
+        <dt>Status: </dt> <dd>Aprovada</dd>
+    <% end %>
 </dl>
 
+
+
+<% unless current_user == @promotion.user %>
+    <%= link_to 'Aprovar Promoção', approve_promotion_path, method: :post %>
+<% end %>
 <%= link_to 'Gerar cupons', generate_coupons_promotion_path(@promotion), method: :post %>
+
 
 <% @promotion.coupons.each do |coupon| %>
     <div id="coupon-<%= coupon.id %>">

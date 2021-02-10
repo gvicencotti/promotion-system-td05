@@ -60,17 +60,36 @@ describe Promotion do
       expect(codes).not_to include('NATAL10-0000')
       expect(codes).not_to include('NATAL10-0101')
     end   
+  
+
+    it 'do not generate if error' do
+      promotion = Promotion.create!(name: 'Natal', description: 'Promoção de Natal',
+                                    code: 'NATAL10', discount_rate: 10, coupon_quantity:100, 
+                                    expiration_date:'22/12/2033')
+      promotion.coupons.create!(code: 'NATAL10-0030')
+      
+      expect { promotion.generate_coupons! }.to raise_error(ActiveRecord::RecordNotUnique)
+
+      expect(promotion.coupons.reload.size).to eq 1
+      
+    end
   end
 
-  it 'do not generate if error' do
-    promotion = Promotion.create!(name: 'Natal', description: 'Promoção de Natal',
-                                  code: 'NATAL10', discount_rate: 10, coupon_quantity:100, 
-                                  expiration_date:'22/12/2033')
-    promotion.coupons.create!(code: 'NATAL10-0030')
-    
-    expect { promotion.generate_coupons! }.to raise_error(ActiveRecord::RecordNotUnique)
+  context '#approve!' do
 
-    expect(promotion.coupons.reload.size).to eq 1
-    
-  end 
+    it 'should generate a PromotionApproval object' do
+      creator = User.create!(email: 'gustavo@email.com', password: '123456')
+      promotion = Promotion.create!(name: 'Natal', description: 'Promoção de Natal',
+                            code: 'NATAL10', discount_rate: 10, coupon_quantity: 100,
+                            expiration_date: '22/12/2033', user: creator)
+      approval_user = User.create!(email: 'maria@email.com', password: '123456')
+      
+      promotion.approve!(approval_user)
+      
+      promotion.reload
+      expect(promotion.approved?). to be_truthy
+      expect(promotion.approver).to eq approval_user
+    end
+  end
+
 end
